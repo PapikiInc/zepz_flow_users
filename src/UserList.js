@@ -64,6 +64,10 @@ const UserList = () => {
     setBlockedUsers((prevBlockedUsers) => [...prevBlockedUsers, userId]); // Block a user
   };
 
+  const handleUnblockUser = (userId) => {
+    setBlockedUsers((prevBlockedUsers) => prevBlockedUsers.filter((id) => id !== userId)); // Unblock a user
+  };
+
   const isUserFollowed = (userId) => followedUsers.includes(userId); // Check if a user is followed
   const isUserBlocked = (userId) => blockedUsers.includes(userId); // Check if a user is blocked
 
@@ -78,7 +82,7 @@ const UserList = () => {
   if (error) {
     return (
       <Typography variant="body1" color="error">
-        Error: {error} 
+        Error: {error}
       </Typography>
     );
   }
@@ -88,7 +92,7 @@ const UserList = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
-            Top 20 StackOverflow users 
+            Top 20 StackOverflow users
           </Typography>
           <TextField
             label="Search"
@@ -109,7 +113,7 @@ const UserList = () => {
                   className={`user-card ${isUserBlocked(user.user_id) ? 'blocked' : ''}`} // Apply "blocked" class to blocked users
                 >
                   <ListItemAvatar>
-                    <Avatar src={user.profile_image} alt={user.display_name} className="user-avatar" /> 
+                    <Avatar src={user.profile_image} alt={user.display_name} className="user-avatar" />
                   </ListItemAvatar>
                   <CardContent>
                     <ListItemText
@@ -149,13 +153,24 @@ const UserList = () => {
                             Follow
                           </Button>
                         )}
-                        <Button
-                          size="small"
-                          color="secondary"
-                          onClick={() => handleBlockUser(user.user_id)}
-                        >
-                          Block
-                        </Button>
+                        {isUserBlocked(user.user_id) && (
+                          <Button
+                            size="small"
+                            color="primary"
+                            onClick={() => handleUnblockUser(user.user_id)}
+                          >
+                            Unblock
+                          </Button>
+                        )}
+                        {!isUserBlocked(user.user_id) && (
+                          <Button
+                            size="small"
+                            color="secondary"
+                            onClick={() => handleBlockUser(user.user_id)}
+                          >
+                            Block
+                          </Button>
+                        )}
                       </div>
                     )}
                   </CardActions>
@@ -174,7 +189,7 @@ const UserList = () => {
                     .filter((user) => blockedUsers.includes(user.user_id))
                     .map((blockedUser) => (
                       <ListItem key={blockedUser.user_id}>
-                        <ListItemText primary={blockedUser.display_name} /> 
+                        <ListItemText primary={blockedUser.display_name} />
                       </ListItem>
                     ))}
                 </List>
@@ -188,7 +203,7 @@ const UserList = () => {
                     .filter((user) => followedUsers.includes(user.user_id))
                     .map((followedUser) => (
                       <ListItem key={followedUser.user_id}>
-                        <ListItemText primary={followedUser.display_name} /> 
+                        <ListItemText primary={followedUser.display_name} />
                       </ListItem>
                     ))}
                 </List>
