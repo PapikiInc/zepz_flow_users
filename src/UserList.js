@@ -18,12 +18,12 @@ import {
 import './UserList.css'; // Import the CSS file
 
 const UserList = () => {
-  const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
-  const [expandedUser, setExpandedUser] = useState(null);
-  const [followedUsers, setFollowedUsers] = useState([]);
-  const [blockedUsers, setBlockedUsers] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [users, setUsers] = useState([]); // State for storing the list of users
+  const [error, setError] = useState(null); // State for storing error message
+  const [expandedUser, setExpandedUser] = useState(null); // State for tracking expanded user
+  const [followedUsers, setFollowedUsers] = useState([]); // State for tracking followed users
+  const [blockedUsers, setBlockedUsers] = useState([]); // State for tracking blocked users
+  const [searchQuery, setSearchQuery] = useState(''); // State for storing search query
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -40,45 +40,45 @@ const UserList = () => {
       }
     };
 
-    fetchUsers();
+    fetchUsers(); // Fetch users data when the component mounts
   }, []);
 
   const handleExpandUser = (userId) => {
-    setExpandedUser((prevUser) => (prevUser === userId ? null : userId));
+    setExpandedUser((prevUser) => (prevUser === userId ? null : userId)); // Expand/collapse user card
   };
 
   const handleFollowUser = (userId) => {
     if (!isUserBlocked(userId)) {
-      setFollowedUsers((prevFollowedUsers) => [...prevFollowedUsers, userId]);
+      setFollowedUsers((prevFollowedUsers) => [...prevFollowedUsers, userId]); // Follow a user if not blocked
     }
   };
 
   const handleUnfollowUser = (userId) => {
-    setFollowedUsers((prevFollowedUsers) => prevFollowedUsers.filter((id) => id !== userId));
+    setFollowedUsers((prevFollowedUsers) => prevFollowedUsers.filter((id) => id !== userId)); // Unfollow a user
   };
 
   const handleBlockUser = (userId) => {
     if (isUserFollowed(userId)) {
-      setFollowedUsers((prevFollowedUsers) => prevFollowedUsers.filter((id) => id !== userId));
+      setFollowedUsers((prevFollowedUsers) => prevFollowedUsers.filter((id) => id !== userId)); // Unfollow a user if already followed
     }
-    setBlockedUsers((prevBlockedUsers) => [...prevBlockedUsers, userId]);
+    setBlockedUsers((prevBlockedUsers) => [...prevBlockedUsers, userId]); // Block a user
   };
 
-  const isUserFollowed = (userId) => followedUsers.includes(userId);
-  const isUserBlocked = (userId) => blockedUsers.includes(userId);
+  const isUserFollowed = (userId) => followedUsers.includes(userId); // Check if a user is followed
+  const isUserBlocked = (userId) => blockedUsers.includes(userId); // Check if a user is blocked
 
   const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
+    setSearchQuery(event.target.value); // Update search query
   };
 
   const filteredUsers = users.filter((user) =>
-    user.display_name.toLowerCase().includes(searchQuery.toLowerCase())
+    user.display_name.toLowerCase().includes(searchQuery.toLowerCase()) // Filter users based on search query
   );
 
   if (error) {
     return (
       <Typography variant="body1" color="error">
-        Error: {error}
+        Error: {error} 
       </Typography>
     );
   }
@@ -88,14 +88,14 @@ const UserList = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
-            User List
+            Top 20 StackOverflow users 
           </Typography>
           <TextField
             label="Search"
             variant="outlined"
             size="small"
             value={searchQuery}
-            onChange={handleSearchChange}
+            onChange={handleSearchChange} // Search input field
           />
         </Toolbar>
       </AppBar>
@@ -106,15 +106,15 @@ const UserList = () => {
               <ListItem key={user.user_id} disableGutters className="user-list-item">
                 <Card
                   variant="outlined"
-                  className={`user-card ${isUserBlocked(user.user_id) ? 'blocked' : ''}`}
+                  className={`user-card ${isUserBlocked(user.user_id) ? 'blocked' : ''}`} // Apply "blocked" class to blocked users
                 >
                   <ListItemAvatar>
-                    <Avatar src={user.profile_image} alt={user.display_name} className="user-avatar" />
+                    <Avatar src={user.profile_image} alt={user.display_name} className="user-avatar" /> 
                   </ListItemAvatar>
                   <CardContent>
                     <ListItemText
-                      primary={user.display_name}
-                      secondary={`Reputation: ${user.reputation}`}
+                      primary={user.display_name} // User display name
+                      secondary={`Reputation: ${user.reputation}`} // User reputation
                     />
                   </CardContent>
                   <CardActions className="actions">
@@ -123,7 +123,7 @@ const UserList = () => {
                         size="small"
                         color="primary"
                         onClick={() => handleExpandUser(user.user_id)}
-                        disabled={expandedUser === user.user_id}
+                        disabled={expandedUser === user.user_id} // Disable button if user card is expanded
                       >
                         {expandedUser === user.user_id ? 'Viewing' : 'View Options'}
                       </Button>
@@ -135,7 +135,7 @@ const UserList = () => {
                             size="small"
                             color="primary"
                             onClick={() => handleUnfollowUser(user.user_id)}
-                            disabled={isUserBlocked(user.user_id)}
+                            disabled={isUserBlocked(user.user_id)} // Disable button if user is blocked
                           >
                             Unfollow
                           </Button>
@@ -144,7 +144,7 @@ const UserList = () => {
                             size="small"
                             color="primary"
                             onClick={() => handleFollowUser(user.user_id)}
-                            disabled={isUserBlocked(user.user_id)}
+                            disabled={isUserBlocked(user.user_id)} // Disable button if user is blocked
                           >
                             Follow
                           </Button>
@@ -174,7 +174,7 @@ const UserList = () => {
                     .filter((user) => blockedUsers.includes(user.user_id))
                     .map((blockedUser) => (
                       <ListItem key={blockedUser.user_id}>
-                        <ListItemText primary={blockedUser.display_name} />
+                        <ListItemText primary={blockedUser.display_name} /> 
                       </ListItem>
                     ))}
                 </List>
@@ -188,7 +188,7 @@ const UserList = () => {
                     .filter((user) => followedUsers.includes(user.user_id))
                     .map((followedUser) => (
                       <ListItem key={followedUser.user_id}>
-                        <ListItemText primary={followedUser.display_name} />
+                        <ListItemText primary={followedUser.display_name} /> 
                       </ListItem>
                     ))}
                 </List>
